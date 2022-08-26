@@ -16,11 +16,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usersIdSeq")
     private Long id;
 
-    @Pattern(regexp = "[A-Za-zА-Яа-я]{2,15}", message = "Имя должно содержать от 2 до 15 русских или латинских символов")
+    @Pattern(regexp = "[A-Za-zА-Яа-я ]{0,15}", message = "Имя должно содержать до 15 русских или латинских символов")
     @Column(name = "first_name")
     private String firstName;
 
-    @Pattern(regexp = "[A-Za-zА-Яа-я]{2,15}", message = "Фамилия должна содержать от 2 до 15 русских или латинских символов")
+    @Pattern(regexp = "[A-Za-zА-Яа-я ]{0,15}", message = "Фамилия должна содержать до 15 русских или латинских символов")
     @Column(name = "last_name")
     private String lastName;
 

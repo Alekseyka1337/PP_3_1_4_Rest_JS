@@ -14,6 +14,12 @@
       с ролью
       <b sec:authentication="principal.authorities"></b>
     </p>
+    <div sec:authorize = "hasRole('ROLE_ADMIN')">
+      <a href="/admin">В админку</a>
+    </div>
+    <div sec:authorize = "hasRole('ROLE_USER')">
+      <a href="/user">Профиль</a>
+    </div>
   </div>
   <div sec:authorize = "isAnonymous()">
     <a href="/login">Войти</a>
