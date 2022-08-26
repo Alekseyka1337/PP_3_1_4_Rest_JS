@@ -24,7 +24,7 @@
         <th th:text="${user.getLastName()}"></th>
         <th th:text="${user.getAge()}"></th>
         <th th:text="${user.getEmail()}"></th>
-        <th th:text="${user.getAuthorities()}"></th>
+        <th th:text="${#strings.substring(user.getAuthorities(), 1, #strings.length(user.getAuthorities())-1)}"></th>
     </tr>
 </table>
 </body>

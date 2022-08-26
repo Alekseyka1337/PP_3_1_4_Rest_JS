@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
   <title>Привет</title>
 </head>
@@ -9,8 +9,10 @@
   <div sec:authorize = "isAuthenticated()">
     <a href="/logout">Выйти</a>
     <p>
-      Добро пожаловать <b>[[${#request.userPrincipal.principal.username}]] </b>
-      <span sec:authentication="principal.authorities"></span>
+      Добро пожаловать
+      <b sec:authentication="principal.username"></b>
+      с ролью
+      <b sec:authentication="principal.authorities"></b>
     </p>
   </div>
   <div sec:authorize = "isAnonymous()">

@@ -31,7 +31,7 @@
     <br/>
     <label for="roles">Роли:</label>
     <th:block th:each="role: ${listRoles}">
-        <input type="checkbox" th:field="*{roles}" th:text="${role.name}" th:value="${role.id}" id="roles" >
+        <input type="checkbox" th:field="*{roles}" th:text="${#strings.substring(role.name, 5)}" th:value="${role.id}" id="roles" >
     </th:block>
     <br/>
     <input type="submit" value="Создать!">
