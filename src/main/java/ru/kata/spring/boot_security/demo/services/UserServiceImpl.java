@@ -8,7 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
@@ -57,11 +56,6 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.save(passwordCoder(user));
         return "redirect:/admin";
-    }
-
-    @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
     }
 
     @Override
