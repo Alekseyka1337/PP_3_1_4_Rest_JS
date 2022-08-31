@@ -12,8 +12,8 @@ import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @DataJpaTest
@@ -37,12 +37,12 @@ public class CreateDefaultUserTest {
 		userRepository.save(user);
 	}
 
-	public List<Role> createRoles(){
+	public Set<Role> createRoles(){
 		Role role1 = new Role("ROLE_ADMIN");
 		Role role2 = new Role("ROLE_USER");
 		roleRepository.save(role1);
 		roleRepository.save(role2);
-		List<Role> roles = new ArrayList<>();
+		Set<Role> roles = new HashSet<>();
 		roles.add(role1);
 		roles.add(role2);
 		return roles;

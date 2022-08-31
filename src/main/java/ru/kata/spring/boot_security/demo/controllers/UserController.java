@@ -4,12 +4,10 @@ package ru.kata.spring.boot_security.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
-import javax.validation.Valid;
 import java.security.Principal;
 
 
@@ -30,23 +28,10 @@ public class UserController {
     }
 
     @GetMapping(value = "/admin")
-    public String getAllUsers (Model model) {
+    public String adminPanel (@ModelAttribute("user") User user, Model model) {
         model.addAttribute("users", userService.getAllUsers());
-        return "getAllUsers";
-    }
-
-    @GetMapping(value = "/admin/new")
-    public String createUserForm (Model model) {
-        model.addAttribute("user", new User());
         model.addAttribute("listRoles", userService.getListRoles());
-        return "/createUser";
-    }
-
-    @GetMapping(value = "/admin/{id}/update")
-    public String updateUserByIdForm (@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userService.getUserById(id));
-        model.addAttribute("listRoles", userService.getListRoles());
-        return "updateUser";
+        return "adminPanel";
     }
 
     @DeleteMapping(value = "/admin/{id}/delete")
@@ -55,27 +40,13 @@ public class UserController {
         return "redirect:/admin";
     }
     @PostMapping(value = "/admin/save")
-    public String createUser(Model model, @ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+    public String createUser(@ModelAttribute("user") User user, Model model) {
         model.addAttribute("listRoles", userService.getListRoles());
-        if (userService.findUserByEmail(user.getEmail()) != null) {
-            bindingResult.rejectValue("email", "error.user", "Аккаунт с данным email уже существует");
-        }
-        if (bindingResult.hasErrors()) {
-            return "createUser";
-        }
-        userService.saveOrUpdateUser(user);
-        return "redirect:/admin";
+        return userService.saveUser(user);
     }
     @PatchMapping("/admin/update")
-    public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
+    public String updateUser(@ModelAttribute("user") User user, Model model) {
         model.addAttribute("listRoles", userService.getListRoles());
-        if (userService.findUserByEmail(user.getEmail()) != null && !userService.findUserByEmail(user.getEmail()).getId().equals(user.getId())) {
-            bindingResult.rejectValue("email", "error.user", "Аккаунт с данным email уже существует");
-        }
-        if (bindingResult.hasErrors()) {
-            return "updateUser";
-        }
-        userService.saveOrUpdateUser(user);
-        return "redirect:/admin";
+        return userService.updateUser(user);
     }
 }

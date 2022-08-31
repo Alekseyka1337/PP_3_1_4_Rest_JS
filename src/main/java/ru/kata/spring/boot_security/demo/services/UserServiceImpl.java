@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
@@ -42,8 +43,20 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void saveOrUpdateUser(User user) {
+    public String saveUser(User user) {
         userRepository.save(passwordCoder(user));
+        return "redirect:/admin";
+    }
+    @Transactional
+    @Override
+    public String updateUser(User user) {
+        if (user.getPassword().equals("")) {
+            user.setPassword(findUserByEmail(user.getEmail()).getPassword());
+            userRepository.save(user);
+            return "redirect:/admin";
+        }
+        userRepository.save(passwordCoder(user));
+        return "redirect:/admin";
     }
 
     @Override

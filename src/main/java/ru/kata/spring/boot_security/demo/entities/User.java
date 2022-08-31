@@ -4,7 +4,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.util.*;
 
 
@@ -16,33 +15,24 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usersIdSeq")
     private Long id;
 
-    @Pattern(regexp = "[A-Za-zА-Яа-я ]{0,15}", message = "Имя должно содержать до 15 русских или латинских символов")
     @Column(name = "first_name")
     private String firstName;
 
-    @Pattern(regexp = "[A-Za-zА-Яа-я ]{0,15}", message = "Фамилия должна содержать до 15 русских или латинских символов")
     @Column(name = "last_name")
     private String lastName;
 
-    @Min(value = 0, message = "Возраст должен быть больше 0")
-    @Max(value = 127, message = "Возраст должен быть меньше 127")
     @Column(name="age")
     private byte age;
 
-
-    @Email(message = "Введите корректный email")
-    @NotEmpty(message = "Email не может быть пустым")
     @Column(name = "email" , unique = true)
     private String email;
 
-    @NotEmpty(message = "Пароль не может быть пустым")
-    @Size(min = 4, message = "Пароль должен содержать больше 4 символов")
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles = new ArrayList<>();
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
@@ -91,11 +81,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
