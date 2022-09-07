@@ -8,9 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.entities.Role;
+
 import ru.kata.spring.boot_security.demo.entities.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import java.util.List;
@@ -19,13 +18,11 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -34,38 +31,38 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(Sort.by("id"));
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
     }
 
-    @Transactional
     @Override
-    public String saveUser(User user) {
-        userRepository.save(passwordCoder(user));
-        return "redirect:/admin";
-    }
     @Transactional
-    @Override
-    public String updateUser(User user) {
-        if (user.getPassword().equals("")) {
-            user.setPassword(findUserByEmail(user.getEmail()).getPassword());
-            userRepository.save(user);
-            return "redirect:/admin";
-        }
+    public void saveUser(User user) {
         userRepository.save(passwordCoder(user));
-        return "redirect:/admin";
     }
 
     @Override
+    @Transactional
+    public void updateUser(User user) {
+        if (user.getPassword().equals("")) {
+            user.setPassword(findUserByEmail(user.getEmail()).getPassword());
+            userRepository.save(user);
+        }
+        userRepository.save(passwordCoder(user));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
 
     @Override
-    public List<Role> getListRoles() {
-        return roleRepository.findAll();
+    @Transactional(readOnly = true)
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -73,15 +70,15 @@ public class UserServiceImpl implements UserService {
         return passwordEncoder;
     }
 
-    @Transactional
     @Override
+    @Transactional
     public User passwordCoder(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return user;
     }
 
-    @Transactional
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws BadCredentialsException {
         User user = findUserByEmail(username);
         if (user == null) {

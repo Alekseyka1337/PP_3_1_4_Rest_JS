@@ -28,6 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationProvider.setUserDetailsService(userService);
         return authenticationProvider;
     }
+
     @Bean
     public SpringSecurityDialect securityDialect() {
         return new SpringSecurityDialect();
@@ -38,15 +39,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/index").permitAll()
-                .antMatchers("/user").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/admin", "/api/authorizeUser").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/api/**").hasRole("ADMIN")
                 .and()
                 .formLogin().successHandler(successUserHandler)
-                .usernameParameter("email")
-                .passwordParameter("password")
                 .permitAll()
                 .and()
                 .logout().logoutSuccessUrl("/")
-                .permitAll();
+                .permitAll()
+                .and().csrf().disable();
     }
 }
